@@ -64,16 +64,24 @@ struct ContentView: View {
                 Map(position: $cameraPosition) {
                     ForEach(petReports) { report in
                         Annotation(report.title, coordinate: report.coordinate) {
-                            Image(report.imageName)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 40, height: 40)
-                                .clipShape(Circle())
-                                .overlay(Circle().stroke(Color.white, lineWidth: 2))
-                                .shadow(radius: 3)
-                                .onTapGesture {
-                                    selectedPetReport = report // Ceci déclenchera le sheet
+                            Group {
+                                if UIImage(named: report.imageName) != nil {
+                                    Image(report.imageName)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 40, height: 40)
+                                        .clipShape(Circle())
+                                } else {
+                                    Image(systemName: "pawprint.circle.fill")
+                                        .font(.title)
+                                        .foregroundColor(.red)
                                 }
+                            }
+                            .overlay(Circle().stroke(Color.white, lineWidth: 2))
+                            .shadow(radius: 3)
+                            .onTapGesture {
+                                selectedPetReport = report
+                            }
                         }
                     }
                 }
@@ -81,21 +89,16 @@ struct ContentView: View {
                     MapUserLocationButton()
                     MapCompass()
                 }
-                .gesture(
-                    DragGesture(minimumDistance: 0).onEnded { value in
-                        guard isSelectingLocation else { return }
-                        
-                        // Obtenir la position du tap
-                        let location = value.location
-                        
-                        // Convertir en coordonnées géographiques
-                        if let coordinate = proxy.convert(location, from: .local) {
+                .onTapGesture { location in
+                    guard isSelectingLocation else { return }
+                    
+                    Task {
+                        if let coordinate =  proxy.convert(location, from: .local) {
                             newPetLocation = coordinate
                             isSelectingLocation = false
                         }
                     }
-                )
-                
+                }
             }
 
             // Bouton Ajouter Animal
@@ -104,15 +107,20 @@ struct ContentView: View {
                 HStack {
                     Spacer()
                     Button(action: {
-                        isSelectingLocation = true
+                        isSelectingLocation.toggle()
                     }) {
-                        Image(systemName: "plus.circle.fill")
+                        Image(systemName: isSelectingLocation ? "minus.circle.fill" : "plus.circle.fill")
                             .font(.largeTitle)
-                            .foregroundColor(.blue)
+                            .foregroundColor(isSelectingLocation ? .red : .blue)
                             .padding()
                             .background(.white)
                             .clipShape(Circle())
+                            .overlay(
+                                Circle()
+                                    .stroke(isSelectingLocation ? Color.red : Color.blue, lineWidth: 3)
+                            )
                             .shadow(radius: 4)
+                            .animation(.easeInOut, value: isSelectingLocation)
                     }
                 }
                 .padding()
