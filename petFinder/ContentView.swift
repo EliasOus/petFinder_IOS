@@ -143,51 +143,7 @@ struct ContentView: View {
         .onAppear {
             locationManager.startUpdatingLocation()
         }
-        // sheet pour la création d'un nouvel animal
-        .sheet(isPresented: $showingAddSheet) {
-            NavigationView {
-                Form {
-                    Section(header: Text("Nouvel animal")) {
-                        TextField("Titre (ex: Chien trouvé)", text: $newPetTitle)
-                        TextField("Description", text: $newPetDescription)
-                        
-                        Button("Sélectionner l'emplacement") {
-                            // Active le mode sélection de carte
-                            newPetLocation = nil
-                        }
-                        
-                        if let location = newPetLocation {
-                            Text("Position sélectionnée: \(location.latitude, specifier: "%.4f"), \(location.longitude, specifier: "%.4f")")
-                        }
-                    }
-                    
-                    Section {
-                        Button("Enregistrer") {
-                            if let loc = newPetLocation {
-                                let newPet = PetReport(
-                                    title: newPetTitle,
-                                    coordinate: loc,
-                                    imageName: "default_animal", // Changez selon besoin
-                                    description: newPetDescription
-                                )
-                                // Ajoutez ici la logique pour sauvegarder newPet
-                                petReports.append(newPet)
-                                
-                                // Réinitialise le formulaire
-                                newPetTitle = ""
-                                newPetDescription = ""
-                                newPetLocation = nil
-                                showingAddSheet = false
-                            }
-                        }
-                        .disabled(newPetTitle.isEmpty || newPetDescription.isEmpty || newPetLocation == nil)
-                    }
-                }
-                .navigationTitle("Ajouter un animal")
-                .navigationBarTitleDisplayMode(.inline)
-            }
-        }
-        
+            
         // sheet pour vesuailise les details d'un animal perdu/trouve
         .sheet(item: $selectedReport) { report in
             VStack {
