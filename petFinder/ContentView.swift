@@ -73,7 +73,10 @@ struct ContentView: View {
                 Map(position: $cameraPosition) {
                     ForEach(petReports) { report in
                         Annotation(report.title, coordinate: report.coordinate) {
-                            PetAnnotationView(report: report, selectedPetReport: $selectedPetReport)
+                            PetAnnotationView(
+                                report: report,
+                                selectedPetReport: $selectedPetReport
+                            )
                         }
                     }
                 }
@@ -191,7 +194,20 @@ struct ContentView: View {
             Spacer()
             VStack(spacing: 20) {
                 HStack {
+                    Button(role: .destructive) {
+                        delete(report: report)
+                        selectedPetReport = nil
+                    } label: {
+                        Image(systemName: "trash.fill")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding(6)
+                            .background(Color.red)
+                            .clipShape(Circle())
+                    }
+                    
                     Spacer()
+                    
                     Button(action: { selectedPetReport = nil }) {
                         Image(systemName: "xmark.circle.fill")
                             .font(.title)
@@ -258,6 +274,10 @@ struct ContentView: View {
         .presentationDragIndicator(.visible)
         .ignoresSafeArea(edges: .bottom)
         }
+    }
+    
+    func delete(report: PetReport) {
+        petReports.removeAll { $0.id == report.id }
     }
 }
 
