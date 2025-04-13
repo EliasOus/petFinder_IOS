@@ -37,13 +37,13 @@ struct ContentView: View {
             ),
             PetReport(
                 title: "Cochon d'Inde trouvé 🐹",
-                coordinate: CLLocationCoordinate2D(latitude: 45.4000, longitude: -75.6830),
+                coordinate: CLLocationCoordinate2D(latitude: 45.4050, longitude: -75.6890),
                 imageName: "cochon_inde",
                 description: "Cochon d'Inde caramel répondant à 'Caramel', trouvé près du marché By. Cage temporaire."
             ),
             PetReport(
                 title: "Perroquet trouvé 🦜",
-                coordinate: CLLocationCoordinate2D(latitude: 45.4485, longitude: -75.7000),
+                coordinate: CLLocationCoordinate2D(latitude: 45.4480, longitude: -75.6890),
                 imageName: "perroquet",
                 description: "Ara bleu parlant trouvé à Gatineau, aile soignée. Récompense pour preuve de propriété."
             )
